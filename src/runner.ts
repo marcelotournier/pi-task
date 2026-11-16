@@ -35,6 +35,8 @@ export interface RunnerRequest {
 	logFile: string;
 	/** Aborting kills the child (SIGTERM, then SIGKILL). */
 	signal: AbortSignal;
+	/** SIGTERM→SIGKILL escalation window (default 5s; tests shorten it). */
+	escalationMs?: number;
 	/** Receives incremental progress while the task runs. */
 	onUpdate?: (progress: RunnerProgress) => void;
 }

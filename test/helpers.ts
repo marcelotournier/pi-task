@@ -38,7 +38,7 @@ export type FakeEvent =
 export function assistantMessage(
 	text: string,
 	extra: Partial<any> = {},
-): FakeEvent["message"] & any {
+): any {
 	return {
 		role: "assistant",
 		content: text ? [{ type: "text", text }] : [],

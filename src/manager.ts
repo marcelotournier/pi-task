@@ -318,7 +318,8 @@ export class TaskManager {
 			record.errorMessage =
 				result.spawnError ??
 				result.providerErrorMessage ??
-				(result.exitSignal ? `Task process terminated by ${result.exitSignal}` : `Task process exited with code ${result.exitCode}`) ??
+				(result.exitSignal ? `Task process terminated by ${result.exitSignal}` : undefined) ??
+				(result.exitCode !== null ? `Task process exited with code ${result.exitCode}` : undefined) ??
 				"Task failed";
 			record.stderrTail = result.stderrTail || undefined;
 		}

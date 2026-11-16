@@ -1,16 +1,27 @@
 {
-	"name": "pi-task",
-	"version": "0.1.0",
-	"description": "Durable background tasks for pi: run full pi agents as background tasks with completion callbacks for orchestration",
-	"private": true,
-	"type": "module",
-	"license": "MIT",
-	"pi": {
-		"extensions": ["./src/index.ts"]
-	},
-	"scripts": {
-		"test": "node --test test/",
-		"test:runner": "node --test test/runner.test.ts",
-		"test:manager": "node --test test/manager.test.ts"
-	}
+  "name": "pi-task",
+  "version": "0.1.0",
+  "description": "Durable background tasks for pi: run full pi agents as background tasks with completion callbacks for orchestration",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "test:runner": "node --test test/runner.test.ts",
+    "test:manager": "node --test test/manager.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.2",
+    "@earendil-works/pi-ai": "1.5.2",
+    "@earendil-works/pi-tui": "1.5.2",
+    "typebox": "1.4.7",
+    "typescript": "^5",
+    "@types/node": "*"
+  }
 }
