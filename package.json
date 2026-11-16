@@ -1,0 +1,16 @@
+{
+	"name": "pi-task",
+	"version": "0.1.0",
+	"description": "Durable background tasks for pi: run full pi agents as background tasks with completion callbacks for orchestration",
+	"private": true,
+	"type": "module",
+	"license": "MIT",
+	"pi": {
+		"extensions": ["./src/index.ts"]
+	},
+	"scripts": {
+		"test": "node --test test/",
+		"test:runner": "node --test test/runner.test.ts",
+		"test:manager": "node --test test/manager.test.ts"
+	}
+}
