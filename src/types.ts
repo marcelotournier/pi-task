@@ -141,3 +141,20 @@ export interface TaskNotification {
 	/** Why we are notifying: normal completion, or recovery of a crashed run. */
 	kind: "completed" | "orphaned";
 }
+
+/**
+ * The host the TaskManager is bound to (the main pi agent session, in the
+ * real binding). Implemented in host.ts and faked in tests.
+ */
+export interface TaskHost {
+	/**
+	 * Called exactly once when a background task reaches a terminal state.
+	 * Implementations deliver a message into the main agent session so the
+	 * orchestrator can resume (e.g. pi.sendMessage with triggerTurn).
+	 */
+	notify(notification: TaskNotification): void;
+	/** Persist a record snapshot (pi.appendEntry) so tasks survive restarts. */
+	persist(record: TaskRecord): void;
+	/** Called when the host itself fails while handling a task event. */
+	onError?(error: Error, record: TaskRecord): void;
+}
