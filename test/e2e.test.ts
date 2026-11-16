@@ -97,6 +97,50 @@ test(
 );
 
 test(
+	"e2e: two real pi tasks run concurrently (overlapping time windows)",
+	{ skip: skip ? "no real pi binary (or PI_TASK_E2E=0)" : false, timeout: E2E_TIMEOUT_MS },
+	async () => {
+		const prev = process.env.PI_TASK_PI_BIN;
+		process.env.PI_TASK_PI_BIN = realPi!;
+		try {
+			const notifications: TaskNotification[] = [];
+			const host: TaskHost = {
+				notify: (n) => notifications.push(n),
+				persist: () => {},
+			};
+			const cwd = makeTempDir("pi-task-e2e-parallel-");
+			const manager = new TaskManager({
+				maxConcurrent: 4,
+				host,
+				tasksDir: makeTempDir("pi-task-e2e-parallel-"),
+				runner: (req: RunnerRequest) => runTask(req),
+			});
+
+			const a = manager.run({ prompt: "Run bash: sleep 2. Then reply exactly: ALPHA.", cwd });
+			const b = manager.run({ prompt: "Run bash: sleep 2. Then reply exactly: BRAVO.", cwd });
+			assert.equal(a.status, "running");
+			assert.equal(b.status, "running", "second task must run in parallel, not queue");
+
+			await Promise.all([manager.waitForCompletion(a.id, E2E_TIMEOUT_MS), manager.waitForCompletion(b.id, E2E_TIMEOUT_MS)]);
+
+			assert.equal(a.status, "completed", a.errorMessage ?? "no error");
+			assert.equal(b.status, "completed", b.errorMessage ?? "no error");
+			assert.match(a.finalOutput ?? "", /ALPHA/);
+			assert.match(b.finalOutput ?? "", /BRAVO/);
+			assert.equal(notifications.length, 2, "one callback per task");
+
+			// Their run windows must overlap: proof of real parallelism, not serialization.
+			const aStart = a.startedAt ?? 0, aEnd = a.finishedAt ?? Infinity;
+			const bStart = b.startedAt ?? 0, bEnd = b.finishedAt ?? Infinity;
+			assert.ok(Math.min(aEnd, bEnd) > Math.max(aStart, bStart), `windows did not overlap: a=[${aStart},${aEnd}] b=[${bStart},${bEnd}]`);
+		} finally {
+			if (prev === undefined) delete process.env.PI_TASK_PI_BIN;
+			else process.env.PI_TASK_PI_BIN = prev;
+		}
+	},
+);
+
+test(
 	"e2e: a failing real pi child (bad model) is reported as failed, not hung",
 	{ skip: skip ? "no real pi binary (or PI_TASK_E2E=0)" : false, timeout: E2E_TIMEOUT_MS },
 	async () => {

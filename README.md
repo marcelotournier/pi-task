@@ -57,6 +57,12 @@ anything not summarized in the final output can be inspected with `read`.
 ## Behavior details
 
 - **Concurrency:** up to 4 tasks run at once (bounded pool); extras queue.
+- **Non-interactive (`pi -p`) caveat:** the session ends when the agent's turn
+  ends, and in-flight tasks are then orphaned (state + transcript persist and
+  are recoverable in a later session). For scripted fan-out, start tasks with
+  `wait:true` or collect results with `task_output block:true` before the turn
+  ends. In interactive sessions, completion messages wake the agent in a new
+  turn automatically.
 - **Isolation:** children run with `--no-session` (in-memory) in the task's
   working directory; model/thinking/tools can be overridden per task,
   otherwise they inherit the main session's.

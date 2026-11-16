@@ -200,6 +200,7 @@ export default function (pi: ExtensionAPI) {
 			"After starting background tasks, continue with other useful work or answer the user; when the completion message arrives, process its output and continue the plan.",
 			"Use task_output with block:true only when you genuinely cannot proceed without a specific task's result.",
 			"Give each task prompt enough context to run autonomously: the task agent cannot ask the user questions.",
+			"If you are running non-interactively (print/-p mode, no live user), the session ends when your turn ends and running tasks are orphaned — so before finishing, either start needed tasks with wait:true or collect each outstanding task with task_output block:true.",
 		],
 		parameters: TaskParams,
 
